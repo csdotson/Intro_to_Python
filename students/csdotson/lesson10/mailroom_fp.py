@@ -141,6 +141,20 @@ class DonorCollection():
         else:
             return donor.donations
 
+
+    def projection_report_header():
+        # Render header - make it look nice
+        # Return header
+        pass
+
+
+    def projection_report(self, donor, min_donation=None, max_donation=None):
+        # Do header printing
+        # Do math to generate report
+        # Return report
+        pass
+
+
     def __repr__(self):
         return "DonorCollection({})".format(repr(self.donors))
 
@@ -174,6 +188,23 @@ def print_report():
 def send_letters():
     """ Generate text files in current directory """
     donors.write_letters()
+
+
+def run_projection():
+    name = input("\nPlease enter donor's name: ")
+    if bool(donors.find_donor(name)) == False:
+        print("Donor not found - Please enter name of existing donor")
+        run_projection()
+    else:
+        factor = input("Please enter multiplier for donations:")
+        # Min or max
+        # Set threshold
+        # Call report printer
+
+
+def projection_report():
+    # Prints everything
+    pass
 
 
 def prompt_for_donation():
@@ -213,6 +244,7 @@ main_menu = {
     "1": send_thank_you,
     "2": print_report,
     "3": send_letters,
+    "4": run_projection,
     "q": quit_menu,
 }
 
@@ -223,7 +255,7 @@ thank_you_menu = {
 }
 
 # Prompts used
-main_prompt = ("\nWelcome to the Main Menu! What would you like to do?\n1 - Send a Thank You\n2 - Create a Report\n3 - Send letters to everyone\nq - Quit and exit\n--> ")
+main_prompt = ("\nWelcome to the Main Menu! What would you like to do?\n1 - Send a Thank You\n2 - Create a Report\n3 - Send letters to everyone\n4 - Run Projection\nq - Quit and exit\n--> ")
 
 thank_you_prompt = ("\nPlease choose one of the following:\n1 - Add a donation and send thank you message\n2 - Display list of current donors\nq - Return to main menu\n--> ")
 
