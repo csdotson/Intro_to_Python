@@ -31,6 +31,11 @@ class Donor:
             raise ValueError("Donation can't be negative")
         self.donations.append(donation)
 
+    def challenge(self, factor):
+        """ Multiply donor's donations by a factor """
+        return list(map(lambda donation: donation * factor, self.donations))
+
+
     def create_email(self):
         """ Create formatted email thanking donor """
         letter_details = {
