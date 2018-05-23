@@ -31,11 +31,6 @@ class Donor:
             raise ValueError("Donation can't be negative")
         self.donations.append(donation)
 
-    def challenge(self, factor):
-        """ Multiply donor's donations by a factor """
-        return list(map(lambda donation: donation * factor, self.donations))
-
-
     def create_email(self):
         """ Create formatted email thanking donor """
         letter_details = {
@@ -128,8 +123,21 @@ class DonorCollection():
                 f.write(donor.compose_letter())
                 print(f"\nCreated letter for {donor.name}!")
 
+    def challenge(self, factor):
+        """ Multiply all donations by a given factor """
+        challenge_donors = DonorCollection()
+        for donor in self.donors:
+            donations = list(map(lambda donation: donation * factor, donor.donations))
+            challenge_donors.add_new_donor(Donor(donor.name, donations))
+        return challenge_donors
+
     def __repr__(self):
         return "DonorCollection({})".format(repr(self.donors))
 
     def __str__(self):
         return "Donor collection with: {}".format(self.donors)
+
+d1 = Donor("Bill Gates", [100.00, 20.00, 35.00])
+d2 = Donor("Jeff Bezos", [1.34, 5.67])
+d3 = Donor("Paul Allen", [167.00])
+donors = DonorCollection([d1, d2, d3])
