@@ -125,11 +125,14 @@ class DonorCollection():
 
     def challenge(self, factor):
         """ Multiply all donations by a given factor """
-        challenge_donors = DonorCollection()
+        challenge_donors = DonorCollection([])
         for donor in self.donors:
             donations = list(map(lambda donation: donation * factor, donor.donations))
             challenge_donors.add_new_donor(Donor(donor.name, donations))
         return challenge_donors
+
+    def donation_filter(self):
+        pass
 
     def __repr__(self):
         return "DonorCollection({})".format(repr(self.donors))
@@ -137,7 +140,7 @@ class DonorCollection():
     def __str__(self):
         return "Donor collection with: {}".format(self.donors)
 
-d1 = Donor("Bill Gates", [100.00, 20.00, 35.00])
-d2 = Donor("Jeff Bezos", [1.34, 5.67])
-d3 = Donor("Paul Allen", [167.00])
-donors = DonorCollection([d1, d2, d3])
+# d1 = Donor("Bill Gates", [100.00, 20.00, 35.00])
+# d2 = Donor("Jeff Bezos", [1.34, 5.67])
+# d3 = Donor("Paul Allen", [167.00])
+# donors = DonorCollection([d1, d2, d3])
