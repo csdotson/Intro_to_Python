@@ -123,16 +123,23 @@ class DonorCollection():
                 f.write(donor.compose_letter())
                 print(f"\nCreated letter for {donor.name}!")
 
-    def challenge(self, factor):
+    def challenge(self, factor, min_donation=None, max_donation=None):
         """ Multiply all donations by a given factor """
         challenge_donors = DonorCollection([])
         for donor in self.donors:
-            donations = list(map(lambda donation: donation * factor, donor.donations))
+            donations = self.filter_donation(donor, min_donation, max_donation)
+            donations = list(map(lambda donation: donation * factor, donations))
             challenge_donors.add_new_donor(Donor(donor.name, donations))
         return challenge_donors
 
-    def donation_filter(self):
-        pass
+    def filter_donation(self, donor, min_donation, max_donation):
+        """ Filter for donation either above or below a given amount """
+        if min_donation:
+            return list(filter(lambda x: x >= min_donation, donor.donations))
+        elif max_donation:
+            return list(filter(lambda x: x <= max_donation, donor.donations))
+        else:
+            return donor.donations
 
     def __repr__(self):
         return "DonorCollection({})".format(repr(self.donors))
@@ -140,7 +147,7 @@ class DonorCollection():
     def __str__(self):
         return "Donor collection with: {}".format(self.donors)
 
-# d1 = Donor("Bill Gates", [100.00, 20.00, 35.00])
-# d2 = Donor("Jeff Bezos", [1.34, 5.67])
-# d3 = Donor("Paul Allen", [167.00])
-# donors = DonorCollection([d1, d2, d3])
+d1 = Donor("Bill Gates", [100.00, 20.00, 35.00])
+d2 = Donor("Jeff Bezos", [1.34, 5.67])
+d3 = Donor("Paul Allen", [167.00])
+donors = DonorCollection([d1, d2, d3])
