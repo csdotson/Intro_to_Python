@@ -147,7 +147,91 @@ class DonorCollection():
     def __str__(self):
         return "Donor collection with: {}".format(self.donors)
 
-d1 = Donor("Bill Gates", [100.00, 20.00, 35.00])
-d2 = Donor("Jeff Bezos", [1.34, 5.67])
-d3 = Donor("Paul Allen", [167.00])
-donors = DonorCollection([d1, d2, d3])
+
+### User Input Module ###
+def prompt(prompt, menu):
+    """ Create menu based on arguments """
+    while True:
+        response = input(prompt)
+        try:
+            if menu[response]() == "quit":
+                break
+        except KeyError:
+            print('Please enter a valid selection!')
+
+
+def send_thank_you():
+    """ Create sub_prompt """
+    prompt(thank_you_prompt, thank_you_menu)
+
+
+def print_report():
+    """ Generate donor report """
+    print(donors.create_report_header())
+    print(donors.generate_report())
+
+
+def send_letters():
+    """ Generate text files in current directory """
+    donors.write_letters()
+
+
+def prompt_for_donation():
+    """ Prompt user for new donor/donation """
+    try:
+        name = input("\nPlease enter a donor name: ")
+        donation = float(input(f"Please enter a donation amount for {name}: "))
+    except ValueError:
+        print("Please enter a numeric value for 'donation'!")
+        prompt_for_donation()
+    add_donation(name, donation)
+
+
+def add_donation(name, donation):
+    """ Add donation, create donor if necessary """
+    if donors.find_donor(name):
+        donor = donors.find_donor(name)
+        donor.add_donation(donation)
+    else:
+        donor = Donor(name, [donation])
+        donors.add_new_donor(donor)
+    print(donor.create_email())
+
+
+def print_donors():
+    """ Show list of current donors """
+    print(donors.list_donors())
+
+
+def quit_menu():
+    """ Quit current menu """
+    return "quit"
+
+
+# Dictionaries for menu control flow
+main_menu = {
+    "1": send_thank_you,
+    "2": print_report,
+    "3": send_letters,
+    "q": quit_menu,
+}
+
+thank_you_menu = {
+    "1": prompt_for_donation,
+    "2": print_donors,
+    "q": quit_menu,
+}
+
+# Prompts used
+main_prompt = ("\nWelcome to the Main Menu! What would you like to do?\n1 - Send a Thank You\n2 - Create a Report\n3 - Send letters to everyone\nq - Quit and exit\n--> ")
+
+thank_you_prompt = ("\nPlease choose one of the following:\n1 - Add a donation and send thank you message\n2 - Display list of current donors\nq - Return to main menu\n--> ")
+
+
+### Main ###
+if __name__ == "__main__":
+    d1 = Donor("Bill Gates", [100.00, 20.00, 35.00])
+    d2 = Donor("Jeff Bezos", [1.34, 5.67])
+    d3 = Donor("Paul Allen", [167.00])
+    donors = DonorCollection([d1, d2, d3])
+    prompt(main_prompt, main_menu)
