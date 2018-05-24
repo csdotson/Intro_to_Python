@@ -142,17 +142,23 @@ class DonorCollection():
             return donor.donations
 
 
-    def projection_report_header():
-        # Render header - make it look nice
-        # Return header
-        pass
+    def projection_report_header(self):
+        """ Generate formatted header for projection report """
+        header = '{:20}|{:^15}|{:^15}|{:^15}|{:>15}'.format("Donor Name", "Multiplier", "Min Gift", "Max Gift", "Total Gift") + '\n'
+        header += ("-" * len(header))
+        return header
 
 
-    def projection_report(self, donor, min_donation=None, max_donation=None):
-        # Do header printing
-        # Do math to generate report
-        # Return report
-        pass
+    def projection_report(self, donor, factor, min_donation=None, max_donation=None):
+        # """ Create formatted data for projection """
+        # rows = ''
+        # for donor in self.donors:
+        #     rows += '{:21}{:>15.2f}{:>16}{:>16.2f}'.format(
+        #         donor.name,
+        #         donor.total_donation,
+        #         donor.number_of_donations,
+        #         donor.average_donation) + '\n'
+        # return rows  *** Just copied from other report
 
 
     def __repr__(self):
