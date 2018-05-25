@@ -123,6 +123,7 @@ class DonorCollection():
                 f.write(donor.compose_letter())
                 print(f"\nCreated letter for {donor.name}!")
 
+
     def challenge(self, factor, min_donation=None, max_donation=None):
         """ Multiply all donations by a given factor """
         challenge_donors = DonorCollection([])
@@ -131,6 +132,7 @@ class DonorCollection():
             donations = list(map(lambda donation: donation * factor, donations))
             challenge_donors.add_new_donor(Donor(donor.name, donations))
         return challenge_donors
+
 
     def filter_donation(self, donor, min_donation, max_donation):
         """ Filter for donation either above or below a given amount """
@@ -144,21 +146,23 @@ class DonorCollection():
 
     def projection_report_header(self):
         """ Generate formatted header for projection report """
-        header = '{:20}|{:^15}|{:^15}|{:^15}|{:>15}'.format("Donor Name", "Multiplier", "Min Gift", "Max Gift", "Total Gift") + '\n'
+        header = '{:20}|{:^15}|{:^15}|{:^15}|{:>18}'.format("Donor Name", "Multiplier", "Min Gift", "Max Gift", "Projected Total") + '\n'
         header += ("-" * len(header))
         return header
 
 
-    def projection_report(self, donor, factor, min_donation=None, max_donation=None):
-        # """ Create formatted data for projection """
-        # rows = ''
-        # for donor in self.donors:
-        #     rows += '{:21}{:>15.2f}{:>16}{:>16.2f}'.format(
-        #         donor.name,
-        #         donor.total_donation,
-        #         donor.number_of_donations,
-        #         donor.average_donation) + '\n'
-        # return rows  *** Just copied from other report
+    def projection_report(self, name, factor, min_donation=0, max_donation=0):
+        """ Create formatted data for projection """
+        donor = donors.challenge(factor, min_donation, max_donation).find_donor(name)
+        rows = ''
+        rows += '{:21}{:^15.1f}{:^16.2f}{:^16.2f}{:>19.2f}'.format(
+            donor.name,
+            factor,
+            min_donation,
+            max_donation,
+            donor.total_donation
+            ) + '\n'
+        return rows
 
 
     def __repr__(self):
@@ -197,20 +201,36 @@ def send_letters():
 
 
 def run_projection():
-    name = input("\nPlease enter donor's name: ")
-    if bool(donors.find_donor(name)) == False:
-        print("Donor not found - Please enter name of existing donor")
-        run_projection()
+    name = projection_name_check()
+    factor = int(input("Please enter multiplier for donations: "))
+    min_donation, max_donation = projection_min_max_set()
+    print_projection_report(name, factor, min_donation, max_donation)
+
+
+def projection_name_check():
+    name = input("\nPlease enter name of existing donor: ")
+    if donors.find_donor(name):
+        return name
     else:
-        factor = input("Please enter multiplier for donations:")
-        # Min or max
-        # Set threshold
-        # Call report printer
+        print("Donor not found - please enter a valid donor name")
+        return projection_name_check()
 
 
-def projection_report():
-    # Prints everything
-    pass
+def projection_min_max_set():
+    min_max = input("Would you like to set a [min] or [max] donation limit? ")
+    if min_max == "min":
+        min_donation, max_donation = float(input("Please enter a minimum donation amoumt: ")), 0
+    elif min_max == "max":
+        max_donation, min_donation = float(input("Please enter a maximum donation amoumt: ")), 0
+    else:
+        print("Please enter 'min' or 'max'")
+        return projection_min_max_set()
+    return min_donation, max_donation
+
+
+def print_projection_report(name, factor, min_donation=0, max_donation=0):
+    print(donors.projection_report_header())
+    print(donors.projection_report(name, factor, min_donation, max_donation))
 
 
 def prompt_for_donation():
