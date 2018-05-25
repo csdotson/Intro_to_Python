@@ -85,6 +85,7 @@ class DonorCollection():
             return True
 
     def find_donor(self, name):
+        """ Find donor by name """
         current_donor = None
         for donor in self.donors:
             if name in donor:
@@ -99,13 +100,13 @@ class DonorCollection():
         return donor_names
 
     def create_report_header(self):
-        """ Generate formatted header for report """
+        """ Generate formatted header for donation report """
         header = '{:20}|{:^15}|{:^15}|{:>15}'.format("Donor Name", "Total Given", "Num Gifts", "Average Gift") + '\n'
         header += ("-" * len(header))
         return header
 
     def generate_report(self):
-        """ Create formatted data for report """
+        """ Create formatted data for donation report """
         rows = ''
         for donor in self.donors:
             rows += '{:21}{:>15.2f}{:>16}{:>16.2f}'.format(
@@ -123,16 +124,14 @@ class DonorCollection():
                 f.write(donor.compose_letter())
                 print(f"\nCreated letter for {donor.name}!")
 
-
     def challenge(self, factor, min_donation=None, max_donation=None):
-        """ Multiply all donations by a given factor """
+        """ Multiply all donations by a given factor, apply min/max filter """
         challenge_donors = DonorCollection([])
         for donor in self.donors:
             donations = self.filter_donation(donor, min_donation, max_donation)
             donations = list(map(lambda donation: donation * factor, donations))
             challenge_donors.add_new_donor(Donor(donor.name, donations))
         return challenge_donors
-
 
     def filter_donation(self, donor, min_donation, max_donation):
         """ Filter for donation either above or below a given amount """
@@ -143,16 +142,14 @@ class DonorCollection():
         else:
             return donor.donations
 
-
     def projection_report_header(self):
         """ Generate formatted header for projection report """
         header = '{:20}|{:^15}|{:^15}|{:^15}|{:>18}'.format("Donor Name", "Multiplier", "Min Gift", "Max Gift", "Projected Total") + '\n'
         header += ("-" * len(header))
         return header
 
-
     def projection_report(self, name, factor, min_donation=0, max_donation=0):
-        """ Create formatted data for projection """
+        """ Create formatted data for projection report """
         donor = donors.challenge(factor, min_donation, max_donation).find_donor(name)
         rows = ''
         rows += '{:21}{:^15.1f}{:^16.2f}{:^16.2f}{:>19.2f}'.format(
@@ -163,7 +160,6 @@ class DonorCollection():
             donor.total_donation
             ) + '\n'
         return rows
-
 
     def __repr__(self):
         return "DonorCollection({})".format(repr(self.donors))
@@ -201,6 +197,7 @@ def send_letters():
 
 
 def run_projection():
+    """ Capture input and generate projection report """
     name = projection_name_check()
     factor = int(input("Please enter multiplier for donations: "))
     min_donation, max_donation = projection_min_max_set()
@@ -208,6 +205,7 @@ def run_projection():
 
 
 def projection_name_check():
+    """ Check that donor name exists before running projection """
     name = input("\nPlease enter name of existing donor: ")
     if donors.find_donor(name):
         return name
@@ -217,11 +215,12 @@ def projection_name_check():
 
 
 def projection_min_max_set():
+    """ Establish min/max value to be used in filtering donor projection """
     min_max = input("Would you like to set a [min] or [max] donation limit? ")
     if min_max == "min":
-        min_donation, max_donation = float(input("Please enter a minimum donation amoumt: ")), 0
+        min_donation, max_donation = float(input("Please enter a minimum donation amount: ")), 0
     elif min_max == "max":
-        max_donation, min_donation = float(input("Please enter a maximum donation amoumt: ")), 0
+        max_donation, min_donation = float(input("Please enter a maximum donation amount: ")), 0
     else:
         print("Please enter 'min' or 'max'")
         return projection_min_max_set()
